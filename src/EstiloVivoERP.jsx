@@ -15,7 +15,8 @@ import {
   AlertCircle,
   TrendingUp,
   DollarSign,
-  Calendar
+  Calendar,
+  Menu
 } from 'lucide-react';
 
 // Usuarios predefinidos
@@ -88,17 +89,17 @@ const Login = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-600 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-full mb-4">
-            <Package className="w-10 h-10 text-white" />
+    <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-600 flex items-center justify-center p-3 sm:p-4">
+      <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 w-full max-w-md">
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-full mb-3 sm:mb-4">
+            <Package className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Estilo Vivo</h1>
-          <p className="text-gray-600">Sistema ERP - Las Condes, Chile</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">Estilo Vivo</h1>
+          <p className="text-sm sm:text-base text-gray-600">Sistema ERP - Las Condes, Chile</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center gap-2">
               <AlertCircle className="w-5 h-5" />
@@ -107,20 +108,20 @@ const Login = ({ onLogin }) => {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
               Usuario
             </label>
             <input
               type="text"
               value={usuario}
               onChange={(e) => setUsuario(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
+              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
               placeholder="Ingrese su usuario"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
               Contraseña
             </label>
             <div className="relative">
@@ -128,7 +129,7 @@ const Login = ({ onLogin }) => {
                 type={mostrarPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition pr-12"
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition pr-12"
                 placeholder="Ingrese su contraseña"
               />
               <button
@@ -143,14 +144,14 @@ const Login = ({ onLogin }) => {
 
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 transition shadow-lg hover:shadow-xl"
+            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-2.5 sm:py-3 rounded-lg font-semibold text-sm sm:text-base hover:from-indigo-700 hover:to-purple-700 transition shadow-lg hover:shadow-xl"
           >
             Iniciar Sesión
           </button>
         </form>
 
-        <div className="mt-6 pt-6 border-t border-gray-200">
-          <p className="text-xs text-gray-500 text-center">
+        <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-gray-200">
+          <p className="text-xs text-gray-500 text-center leading-tight">
             Usuarios de prueba: admin/admin123, contador/cont123, vendedor/vend123
           </p>
         </div>
@@ -164,18 +165,18 @@ const Modal = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-white border-b border-gray-200 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between z-10">
+          <h2 className="text-lg sm:text-2xl font-bold text-gray-800">{title}</h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 transition"
           >
-            <X className="w-6 h-6" />
+            <X className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
         </div>
-        <div className="p-6">{children}</div>
+        <div className="p-4 sm:p-6">{children}</div>
       </div>
     </div>
   );
@@ -188,6 +189,7 @@ const EstiloVivoERP = () => {
   const [modalAbierto, setModalAbierto] = useState(false);
   const [itemEditando, setItemEditando] = useState(null);
   const [formData, setFormData] = useState({});
+  const [sidebarAbierto, setSidebarAbierto] = useState(false);
 
   // Estados para datos
   const [productos, setProductos] = useState(PRODUCTOS_INICIALES);
@@ -302,61 +304,61 @@ const EstiloVivoERP = () => {
 
   // Renderizado de módulos
   const renderDashboard = () => (
-    <div className="space-y-6">
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-6 text-white">
-        <h2 className="text-2xl font-bold mb-2">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-4 sm:p-6 text-white">
+        <h2 className="text-xl sm:text-2xl font-bold mb-2">
           Bienvenido, {usuarioLogueado.nombre}
         </h2>
-        <p className="text-indigo-100">Rol: {usuarioLogueado.rol}</p>
+        <p className="text-indigo-100 text-sm sm:text-base">Rol: {usuarioLogueado.rol}</p>
       </div>
 
       {/* Métricas */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-500">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border-l-4 border-blue-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-sm font-medium">Productos</p>
-              <p className="text-3xl font-bold text-gray-800 mt-2">{totalProductos}</p>
+              <p className="text-gray-600 text-xs sm:text-sm font-medium">Productos</p>
+              <p className="text-2xl sm:text-3xl font-bold text-gray-800 mt-1 sm:mt-2">{totalProductos}</p>
             </div>
-            <Package className="w-12 h-12 text-blue-500" />
+            <Package className="w-8 h-8 sm:w-12 sm:h-12 text-blue-500" />
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-500">
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border-l-4 border-green-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-sm font-medium">Ventas</p>
-              <p className="text-3xl font-bold text-gray-800 mt-2">{totalVentas}</p>
+              <p className="text-gray-600 text-xs sm:text-sm font-medium">Ventas</p>
+              <p className="text-2xl sm:text-3xl font-bold text-gray-800 mt-1 sm:mt-2">{totalVentas}</p>
             </div>
-            <ShoppingCart className="w-12 h-12 text-green-500" />
+            <ShoppingCart className="w-8 h-8 sm:w-12 sm:h-12 text-green-500" />
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-purple-500">
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border-l-4 border-purple-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-sm font-medium">Proveedores</p>
-              <p className="text-3xl font-bold text-gray-800 mt-2">{totalProveedores}</p>
+              <p className="text-gray-600 text-xs sm:text-sm font-medium">Proveedores</p>
+              <p className="text-2xl sm:text-3xl font-bold text-gray-800 mt-1 sm:mt-2">{totalProveedores}</p>
             </div>
-            <Users className="w-12 h-12 text-purple-500" />
+            <Users className="w-8 h-8 sm:w-12 sm:h-12 text-purple-500" />
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-orange-500">
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border-l-4 border-orange-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-sm font-medium">Facturas</p>
-              <p className="text-3xl font-bold text-gray-800 mt-2">{totalFacturas}</p>
+              <p className="text-gray-600 text-xs sm:text-sm font-medium">Facturas</p>
+              <p className="text-2xl sm:text-3xl font-bold text-gray-800 mt-1 sm:mt-2">{totalFacturas}</p>
             </div>
-            <FileText className="w-12 h-12 text-orange-500" />
+            <FileText className="w-8 h-8 sm:w-12 sm:h-12 text-orange-500" />
           </div>
         </div>
       </div>
 
       {/* Alertas Importantes */}
-      <div className="bg-white rounded-xl shadow-lg p-6">
-        <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-          <AlertCircle className="w-6 h-6 text-red-500" />
+      <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
+        <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
+          <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 text-red-500" />
           Alertas Importantes
         </h3>
         <div className="space-y-3">
@@ -401,56 +403,102 @@ const EstiloVivoERP = () => {
       </div>
 
       {/* Resumen Financiero */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-4 sm:p-6 text-white">
           <div className="flex items-center justify-between mb-2">
-            <TrendingUp className="w-8 h-8" />
+            <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8" />
           </div>
-          <p className="text-sm opacity-90">Ventas del Mes</p>
-          <p className="text-2xl font-bold mt-1">{formatearMoneda(ventasMes)}</p>
+          <p className="text-xs sm:text-sm opacity-90">Ventas del Mes</p>
+          <p className="text-lg sm:text-2xl font-bold mt-1 break-words">{formatearMoneda(ventasMes)}</p>
         </div>
 
-        <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-xl shadow-lg p-6 text-white">
+        <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-xl shadow-lg p-4 sm:p-6 text-white">
           <div className="flex items-center justify-between mb-2">
-            <DollarSign className="w-8 h-8" />
+            <DollarSign className="w-6 h-6 sm:w-8 sm:h-8" />
           </div>
-          <p className="text-sm opacity-90">Cuentas por Pagar</p>
-          <p className="text-2xl font-bold mt-1">{formatearMoneda(cuentasPorPagar)}</p>
+          <p className="text-xs sm:text-sm opacity-90">Cuentas por Pagar</p>
+          <p className="text-lg sm:text-2xl font-bold mt-1 break-words">{formatearMoneda(cuentasPorPagar)}</p>
         </div>
 
-        <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl shadow-lg p-6 text-white">
+        <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl shadow-lg p-4 sm:p-6 text-white">
           <div className="flex items-center justify-between mb-2">
-            <FileText className="w-8 h-8" />
+            <FileText className="w-6 h-6 sm:w-8 sm:h-8" />
           </div>
-          <p className="text-sm opacity-90">Facturas Pendientes</p>
-          <p className="text-2xl font-bold mt-1">{facturasPendientes}</p>
+          <p className="text-xs sm:text-sm opacity-90">Facturas Pendientes</p>
+          <p className="text-lg sm:text-2xl font-bold mt-1">{facturasPendientes}</p>
         </div>
 
-        <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl shadow-lg p-6 text-white">
+        <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl shadow-lg p-4 sm:p-6 text-white">
           <div className="flex items-center justify-between mb-2">
-            <DollarSign className="w-8 h-8" />
+            <DollarSign className="w-6 h-6 sm:w-8 sm:h-8" />
           </div>
-          <p className="text-sm opacity-90">Balance Estimado</p>
-          <p className="text-2xl font-bold mt-1">{formatearMoneda(balanceEstimado)}</p>
+          <p className="text-xs sm:text-sm opacity-90">Balance Estimado</p>
+          <p className="text-lg sm:text-2xl font-bold mt-1 break-words">{formatearMoneda(balanceEstimado)}</p>
         </div>
       </div>
     </div>
   );
 
   const renderProductos = () => (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-800">Gestión de Productos</h2>
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Gestión de Productos</h2>
         <button
           onClick={() => abrirModal()}
-          className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition flex items-center gap-2"
+          className="w-full sm:w-auto bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition flex items-center justify-center gap-2 text-sm sm:text-base"
         >
-          <Plus className="w-5 h-5" />
-          Nuevo Producto
+          <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+          <span className="hidden sm:inline">Nuevo Producto</span>
+          <span className="sm:hidden">Nuevo</span>
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+      {/* Vista móvil: Cards */}
+      <div className="block sm:hidden space-y-3">
+        {productos.map((producto) => (
+          <div key={producto.id} className="bg-white rounded-xl shadow-lg p-4 border-l-4 border-indigo-500">
+            <div className="flex justify-between items-start mb-2">
+              <div className="flex-1">
+                <h3 className="font-semibold text-gray-900 text-sm">{producto.nombre}</h3>
+                <p className="text-xs text-gray-500 mt-1">{producto.categoria}</p>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => abrirModal(producto)}
+                  className="text-indigo-600 hover:text-indigo-900"
+                >
+                  <Edit className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => eliminarItem(producto.id)}
+                  className="text-red-600 hover:text-red-900"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2 mt-3 text-xs">
+              <div>
+                <span className="text-gray-500">Precio:</span>
+                <span className="ml-1 font-semibold text-gray-900">{formatearMoneda(producto.precio)}</span>
+              </div>
+              <div>
+                <span className="text-gray-500">Stock:</span>
+                <span className={`ml-1 font-semibold ${producto.stock < 10 ? 'text-red-600' : 'text-gray-900'}`}>
+                  {producto.stock}
+                </span>
+              </div>
+              <div className="col-span-2">
+                <span className="text-gray-500">Proveedor:</span>
+                <span className="ml-1 text-gray-900">{producto.proveedor}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Vista desktop: Tabla */}
+      <div className="hidden sm:block bg-white rounded-xl shadow-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50">
@@ -503,73 +551,73 @@ const EstiloVivoERP = () => {
         onClose={cerrarModal}
         title={itemEditando ? 'Editar Producto' : 'Nuevo Producto'}
       >
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Nombre</label>
             <input
               type="text"
               name="nombre"
               value={formData.nombre || ''}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+              className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Categoría</label>
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Categoría</label>
             <input
               type="text"
               name="categoria"
               value={formData.categoria || ''}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+              className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Precio</label>
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Precio</label>
             <input
               type="number"
               name="precio"
               value={formData.precio || ''}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+              className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Stock</label>
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Stock</label>
             <input
               type="number"
               name="stock"
               value={formData.stock || ''}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+              className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Proveedor</label>
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Proveedor</label>
             <input
               type="text"
               name="proveedor"
               value={formData.proveedor || ''}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+              className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
               required
             />
           </div>
-          <div className="flex gap-3 pt-4">
+          <div className="flex gap-2 sm:gap-3 pt-3 sm:pt-4">
             <button
               type="button"
               onClick={cerrarModal}
-              className="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-300 transition"
+              className="flex-1 bg-gray-200 text-gray-800 py-2 text-sm sm:text-base rounded-lg hover:bg-gray-300 transition"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="flex-1 bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
+              className="flex-1 bg-indigo-600 text-white py-2 text-sm sm:text-base rounded-lg hover:bg-indigo-700 transition"
             >
               Guardar
             </button>
@@ -580,19 +628,70 @@ const EstiloVivoERP = () => {
   );
 
   const renderVentas = () => (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-800">Registro de Ventas</h2>
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Registro de Ventas</h2>
         <button
           onClick={() => abrirModal()}
-          className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center gap-2"
+          className="w-full sm:w-auto bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center justify-center gap-2 text-sm sm:text-base"
         >
-          <Plus className="w-5 h-5" />
-          Nueva Venta
+          <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+          <span className="hidden sm:inline">Nueva Venta</span>
+          <span className="sm:hidden">Nueva</span>
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+      {/* Vista móvil: Cards */}
+      <div className="block sm:hidden space-y-3">
+        {ventas.map((venta) => (
+          <div key={venta.id} className="bg-white rounded-xl shadow-lg p-4 border-l-4 border-green-500">
+            <div className="flex justify-between items-start mb-2">
+              <div className="flex-1">
+                <h3 className="font-semibold text-gray-900 text-sm">{venta.cliente}</h3>
+                <p className="text-xs text-gray-500 mt-1">{venta.producto}</p>
+              </div>
+              <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                venta.estado === 'Completada' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+              }`}>
+                {venta.estado}
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-2 mt-3 text-xs">
+              <div>
+                <span className="text-gray-500">Fecha:</span>
+                <span className="ml-1 text-gray-900">{venta.fecha}</span>
+              </div>
+              <div>
+                <span className="text-gray-500">Cantidad:</span>
+                <span className="ml-1 font-semibold text-gray-900">{venta.cantidad}</span>
+              </div>
+              <div className="col-span-2">
+                <span className="text-gray-500">Total:</span>
+                <span className="ml-1 font-semibold text-gray-900">{formatearMoneda(venta.total)}</span>
+              </div>
+            </div>
+            <div className="flex gap-2 mt-3 pt-3 border-t border-gray-200">
+              <button
+                onClick={() => abrirModal(venta)}
+                className="flex-1 text-indigo-600 hover:text-indigo-900 text-xs font-medium flex items-center justify-center gap-1"
+              >
+                <Edit className="w-3 h-3" />
+                Editar
+              </button>
+              <button
+                onClick={() => eliminarItem(venta.id)}
+                className="flex-1 text-red-600 hover:text-red-900 text-xs font-medium flex items-center justify-center gap-1"
+              >
+                <Trash2 className="w-3 h-3" />
+                Eliminar
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Vista desktop: Tabla */}
+      <div className="hidden sm:block bg-white rounded-xl shadow-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50">
@@ -653,34 +752,34 @@ const EstiloVivoERP = () => {
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Fecha</label>
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Fecha</label>
             <input
               type="date"
               name="fecha"
               value={formData.fecha || ''}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+              className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Cliente</label>
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Cliente</label>
             <input
               type="text"
               name="cliente"
               value={formData.cliente || ''}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+              className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Producto</label>
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Producto</label>
             <select
               name="producto"
               value={formData.producto || ''}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+              className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
               required
             >
               <option value="">Seleccione un producto</option>
@@ -690,34 +789,34 @@ const EstiloVivoERP = () => {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Cantidad</label>
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Cantidad</label>
             <input
               type="number"
               name="cantidad"
               value={formData.cantidad || ''}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+              className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Total</label>
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Total</label>
             <input
               type="number"
               name="total"
               value={formData.total || ''}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+              className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Estado</label>
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Estado</label>
             <select
               name="estado"
               value={formData.estado || ''}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+              className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
               required
             >
               <option value="">Seleccione un estado</option>
@@ -725,17 +824,17 @@ const EstiloVivoERP = () => {
               <option value="Pendiente">Pendiente</option>
             </select>
           </div>
-          <div className="flex gap-3 pt-4">
+          <div className="flex gap-2 sm:gap-3 pt-3 sm:pt-4">
             <button
               type="button"
               onClick={cerrarModal}
-              className="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-300 transition"
+              className="flex-1 bg-gray-200 text-gray-800 py-2 text-sm sm:text-base rounded-lg hover:bg-gray-300 transition"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition"
+              className="flex-1 bg-green-600 text-white py-2 text-sm sm:text-base rounded-lg hover:bg-green-700 transition"
             >
               Guardar
             </button>
@@ -746,19 +845,69 @@ const EstiloVivoERP = () => {
   );
 
   const renderProveedores = () => (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-800">Gestión de Proveedores</h2>
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Gestión de Proveedores</h2>
         <button
           onClick={() => abrirModal()}
-          className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition flex items-center gap-2"
+          className="w-full sm:w-auto bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition flex items-center justify-center gap-2 text-sm sm:text-base"
         >
-          <Plus className="w-5 h-5" />
-          Nuevo Proveedor
+          <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+          <span className="hidden sm:inline">Nuevo Proveedor</span>
+          <span className="sm:hidden">Nuevo</span>
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+      {/* Vista móvil: Cards */}
+      <div className="block sm:hidden space-y-3">
+        {proveedores.map((proveedor) => (
+          <div key={proveedor.id} className="bg-white rounded-xl shadow-lg p-4 border-l-4 border-purple-500">
+            <div className="flex justify-between items-start mb-2">
+              <div className="flex-1">
+                <h3 className="font-semibold text-gray-900 text-sm">{proveedor.nombre}</h3>
+                <p className="text-xs text-gray-500 mt-1">RUT: {proveedor.rut}</p>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => abrirModal(proveedor)}
+                  className="text-indigo-600 hover:text-indigo-900"
+                >
+                  <Edit className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => eliminarItem(proveedor.id)}
+                  className="text-red-600 hover:text-red-900"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+            <div className="space-y-2 mt-3 text-xs">
+              <div>
+                <span className="text-gray-500">Contacto:</span>
+                <span className="ml-1 text-gray-900">{proveedor.contacto}</span>
+              </div>
+              <div>
+                <span className="text-gray-500">Teléfono:</span>
+                <span className="ml-1 text-gray-900">{proveedor.telefono}</span>
+              </div>
+              <div>
+                <span className="text-gray-500">Email:</span>
+                <span className="ml-1 text-gray-900 break-all">{proveedor.email}</span>
+              </div>
+              <div>
+                <span className="text-gray-500">Saldo:</span>
+                <span className={`ml-1 font-semibold ${proveedor.saldo > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                  {formatearMoneda(proveedor.saldo)}
+                </span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Vista desktop: Tabla */}
+      <div className="hidden sm:block bg-white rounded-xl shadow-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50">
@@ -815,82 +964,82 @@ const EstiloVivoERP = () => {
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Nombre</label>
             <input
               type="text"
               name="nombre"
               value={formData.nombre || ''}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+              className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">RUT</label>
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">RUT</label>
             <input
               type="text"
               name="rut"
               value={formData.rut || ''}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+              className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Contacto</label>
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Contacto</label>
             <input
               type="text"
               name="contacto"
               value={formData.contacto || ''}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+              className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Teléfono</label>
             <input
               type="text"
               name="telefono"
               value={formData.telefono || ''}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+              className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Email</label>
             <input
               type="email"
               name="email"
               value={formData.email || ''}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+              className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Saldo Pendiente</label>
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Saldo Pendiente</label>
             <input
               type="number"
               name="saldo"
               value={formData.saldo || ''}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+              className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
               required
             />
           </div>
-          <div className="flex gap-3 pt-4">
+          <div className="flex gap-2 sm:gap-3 pt-3 sm:pt-4">
             <button
               type="button"
               onClick={cerrarModal}
-              className="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-300 transition"
+              className="flex-1 bg-gray-200 text-gray-800 py-2 text-sm sm:text-base rounded-lg hover:bg-gray-300 transition"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="flex-1 bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition"
+              className="flex-1 bg-purple-600 text-white py-2 text-sm sm:text-base rounded-lg hover:bg-purple-700 transition"
             >
               Guardar
             </button>
@@ -901,13 +1050,51 @@ const EstiloVivoERP = () => {
   );
 
   const renderFacturas = () => (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-800">Gestión de Facturas</h2>
-        <p className="text-sm text-gray-600">Solo lectura - Visualización de facturas</p>
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Gestión de Facturas</h2>
+        <p className="text-xs sm:text-sm text-gray-600">Solo lectura - Visualización de facturas</p>
       </div>
 
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+      {/* Vista móvil: Cards */}
+      <div className="block sm:hidden space-y-3">
+        {facturas.map((factura) => (
+          <div key={factura.id} className="bg-white rounded-xl shadow-lg p-4 border-l-4 border-orange-500">
+            <div className="flex justify-between items-start mb-2">
+              <div className="flex-1">
+                <h3 className="font-semibold text-gray-900 text-sm">{factura.numero}</h3>
+                <p className="text-xs text-gray-500 mt-1">{factura.cliente}</p>
+              </div>
+              <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                factura.estado === 'Pagada' 
+                  ? 'bg-green-100 text-green-800' 
+                  : factura.estado === 'Vencida' 
+                  ? 'bg-red-100 text-red-800' 
+                  : 'bg-yellow-100 text-yellow-800'
+              }`}>
+                {factura.estado}
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-2 mt-3 text-xs">
+              <div>
+                <span className="text-gray-500">Fecha:</span>
+                <span className="ml-1 text-gray-900">{factura.fecha}</span>
+              </div>
+              <div>
+                <span className="text-gray-500">Vencimiento:</span>
+                <span className="ml-1 text-gray-900">{factura.vencimiento}</span>
+              </div>
+              <div className="col-span-2">
+                <span className="text-gray-500">Monto:</span>
+                <span className="ml-1 font-semibold text-gray-900">{formatearMoneda(factura.monto)}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Vista desktop: Tabla */}
+      <div className="hidden sm:block bg-white rounded-xl shadow-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50">
@@ -955,9 +1142,19 @@ const EstiloVivoERP = () => {
 
   // Renderizar aplicación principal
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="min-h-screen bg-gray-100 flex relative">
+      {/* Overlay para móvil */}
+      {sidebarAbierto && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={() => setSidebarAbierto(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-lg flex flex-col">
+      <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white shadow-lg flex flex-col transform transition-transform duration-300 ease-in-out ${
+        sidebarAbierto ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      }`}>
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
@@ -972,7 +1169,10 @@ const EstiloVivoERP = () => {
 
         <nav className="flex-1 p-4 space-y-2">
           <button
-            onClick={() => setModuloActual('dashboard')}
+            onClick={() => {
+              setModuloActual('dashboard');
+              setSidebarAbierto(false);
+            }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
               moduloActual === 'dashboard'
                 ? 'bg-indigo-50 text-indigo-600 font-semibold'
@@ -980,10 +1180,14 @@ const EstiloVivoERP = () => {
             }`}
           >
             <LayoutDashboard className="w-5 h-5" />
-            Dashboard
+            <span className="hidden sm:inline">Dashboard</span>
+            <span className="sm:hidden">Dashboard</span>
           </button>
           <button
-            onClick={() => setModuloActual('productos')}
+            onClick={() => {
+              setModuloActual('productos');
+              setSidebarAbierto(false);
+            }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
               moduloActual === 'productos'
                 ? 'bg-indigo-50 text-indigo-600 font-semibold'
@@ -994,7 +1198,10 @@ const EstiloVivoERP = () => {
             Productos
           </button>
           <button
-            onClick={() => setModuloActual('ventas')}
+            onClick={() => {
+              setModuloActual('ventas');
+              setSidebarAbierto(false);
+            }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
               moduloActual === 'ventas'
                 ? 'bg-indigo-50 text-indigo-600 font-semibold'
@@ -1005,7 +1212,10 @@ const EstiloVivoERP = () => {
             Ventas
           </button>
           <button
-            onClick={() => setModuloActual('proveedores')}
+            onClick={() => {
+              setModuloActual('proveedores');
+              setSidebarAbierto(false);
+            }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
               moduloActual === 'proveedores'
                 ? 'bg-indigo-50 text-indigo-600 font-semibold'
@@ -1016,7 +1226,10 @@ const EstiloVivoERP = () => {
             Proveedores
           </button>
           <button
-            onClick={() => setModuloActual('facturas')}
+            onClick={() => {
+              setModuloActual('facturas');
+              setSidebarAbierto(false);
+            }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
               moduloActual === 'facturas'
                 ? 'bg-indigo-50 text-indigo-600 font-semibold'
@@ -1040,12 +1253,18 @@ const EstiloVivoERP = () => {
       </aside>
 
       {/* Contenido Principal */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto w-full lg:w-auto">
         {/* Header */}
-        <header className="bg-white shadow-sm border-b border-gray-200 px-8 py-4">
-          <div className="flex justify-between items-center">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-800">
+        <header className="bg-white shadow-sm border-b border-gray-200 px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex justify-between items-center gap-3">
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              <button
+                onClick={() => setSidebarAbierto(!sidebarAbierto)}
+                className="lg:hidden text-gray-600 hover:text-gray-900 p-2"
+              >
+                <Menu className="w-6 h-6" />
+              </button>
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 truncate">
                 {moduloActual === 'dashboard' && 'Dashboard'}
                 {moduloActual === 'productos' && 'Gestión de Productos'}
                 {moduloActual === 'ventas' && 'Registro de Ventas'}
@@ -1053,12 +1272,12 @@ const EstiloVivoERP = () => {
                 {moduloActual === 'facturas' && 'Gestión de Facturas'}
               </h2>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="text-right">
+            <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+              <div className="hidden sm:block text-right">
                 <p className="text-sm font-semibold text-gray-800">{usuarioLogueado.nombre}</p>
                 <p className="text-xs text-gray-500">{usuarioLogueado.rol}</p>
               </div>
-              <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm sm:text-base">
                 {usuarioLogueado.nombre.charAt(0)}
               </div>
             </div>
@@ -1066,7 +1285,7 @@ const EstiloVivoERP = () => {
         </header>
 
         {/* Contenido del Módulo */}
-        <div className="p-8">
+        <div className="p-4 sm:p-6 lg:p-8">
           {moduloActual === 'dashboard' && renderDashboard()}
           {moduloActual === 'productos' && renderProductos()}
           {moduloActual === 'ventas' && renderVentas()}
