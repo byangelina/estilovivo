@@ -21,9 +21,61 @@ import {
 
 // Usuarios predefinidos
 const USUARIOS = {
-  admin: { password: 'admin123', rol: 'Administrador', nombre: 'Administrador' },
-  contador: { password: 'cont123', rol: 'Contador', nombre: 'Contador' },
-  vendedor: { password: 'vend123', rol: 'Vendedor', nombre: 'Vendedor' }
+  admin: { password: 'admin123', rol: 'Administrador', nombre: 'Administrador', rolKey: 'admin' },
+  contador: { password: 'cont123', rol: 'Contador', nombre: 'Contador', rolKey: 'contador' },
+  vendedor: { password: 'vend123', rol: 'Vendedor', nombre: 'Vendedor', rolKey: 'vendedor' }
+};
+
+// Sistema de permisos por rol
+const PERMISOS = {
+  admin: {
+    modules: ['dashboard', 'productos', 'ventas', 'proveedores', 'facturas'],
+    actions: {
+      productos: ['view', 'create', 'edit', 'delete'],
+      ventas: ['view', 'create', 'edit', 'delete'],
+      proveedores: ['view', 'create', 'edit', 'delete'],
+      facturas: ['view', 'create', 'edit', 'delete']
+    },
+    dashboard: {
+      showProductos: true,
+      showVentas: true,
+      showProveedores: true,
+      showFacturas: true,
+      showFinanciero: true,
+      showAlertas: 'all' // todas las alertas
+    }
+  },
+  contador: {
+    modules: ['dashboard', 'ventas', 'proveedores', 'facturas'],
+    actions: {
+      ventas: ['view'],
+      proveedores: ['view', 'edit'],
+      facturas: ['view', 'create', 'edit']
+    },
+    dashboard: {
+      showProductos: false,
+      showVentas: true,
+      showProveedores: true,
+      showFacturas: true,
+      showFinanciero: true,
+      showAlertas: 'tributarias' // solo alertas tributarias
+    }
+  },
+  vendedor: {
+    modules: ['dashboard', 'productos', 'ventas'],
+    actions: {
+      productos: ['view'],
+      ventas: ['view', 'create']
+    },
+    dashboard: {
+      showProductos: true,
+      showVentas: true,
+      showProveedores: false,
+      showFacturas: false,
+      showFinanciero: false,
+      showAlertas: 'stock' // solo alertas de stock
+    }
+  }
 };
 
 // Datos iniciales
@@ -191,6 +243,34 @@ const EstiloVivoERP = () => {
   const [formData, setFormData] = useState({});
   const [sidebarAbierto, setSidebarAbierto] = useState(false);
 
+  // Obtener permisos del usuario actual
+  const obtenerPermisos = () => {
+    if (!usuarioLogueado) return null;
+    return PERMISOS[usuarioLogueado.rolKey] || null;
+  };
+
+  // Verificar si tiene acceso a un módulo
+  const tieneAccesoModulo = (modulo) => {
+    const permisos = obtenerPermisos();
+    if (!permisos) return false;
+    return permisos.modules.includes(modulo);
+  };
+
+  // Verificar si tiene permiso para una acción
+  const tienePermiso = (modulo, accion) => {
+    const permisos = obtenerPermisos();
+    if (!permisos) return false;
+    if (!permisos.actions[modulo]) return false;
+    return permisos.actions[modulo].includes(accion);
+  };
+
+  // Validar acceso al módulo actual
+  useEffect(() => {
+    if (usuarioLogueado && !tieneAccesoModulo(moduloActual)) {
+      setModuloActual('dashboard');
+    }
+  }, [usuarioLogueado, moduloActual]);
+
   // Estados para datos
   const [productos, setProductos] = useState(PRODUCTOS_INICIALES);
   const [ventas, setVentas] = useState(VENTAS_INICIALES);
@@ -303,7 +383,11 @@ const EstiloVivoERP = () => {
   };
 
   // Renderizado de módulos
-  const renderDashboard = () => (
+  const renderDashboard = () => {
+    const permisos = obtenerPermisos();
+    const dashboardConfig = permisos?.dashboard || {};
+
+    return (
     <div className="space-y-4 sm:space-y-6">
       <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-4 sm:p-6 text-white">
         <h2 className="text-xl sm:text-2xl font-bold mb-2">
@@ -314,143 +398,176 @@ const EstiloVivoERP = () => {
 
       {/* Métricas */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border-l-4 border-blue-500">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-xs sm:text-sm font-medium">Productos</p>
-              <p className="text-2xl sm:text-3xl font-bold text-gray-800 mt-1 sm:mt-2">{totalProductos}</p>
+        {dashboardConfig.showProductos && (
+          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border-l-4 border-blue-500">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-xs sm:text-sm font-medium">Productos</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-800 mt-1 sm:mt-2">{totalProductos}</p>
+              </div>
+              <Package className="w-8 h-8 sm:w-12 sm:h-12 text-blue-500" />
             </div>
-            <Package className="w-8 h-8 sm:w-12 sm:h-12 text-blue-500" />
           </div>
-        </div>
+        )}
 
-        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border-l-4 border-green-500">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-xs sm:text-sm font-medium">Ventas</p>
-              <p className="text-2xl sm:text-3xl font-bold text-gray-800 mt-1 sm:mt-2">{totalVentas}</p>
+        {dashboardConfig.showVentas && (
+          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border-l-4 border-green-500">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-xs sm:text-sm font-medium">Ventas</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-800 mt-1 sm:mt-2">{totalVentas}</p>
+              </div>
+              <ShoppingCart className="w-8 h-8 sm:w-12 sm:h-12 text-green-500" />
             </div>
-            <ShoppingCart className="w-8 h-8 sm:w-12 sm:h-12 text-green-500" />
           </div>
-        </div>
+        )}
 
-        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border-l-4 border-purple-500">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-xs sm:text-sm font-medium">Proveedores</p>
-              <p className="text-2xl sm:text-3xl font-bold text-gray-800 mt-1 sm:mt-2">{totalProveedores}</p>
+        {dashboardConfig.showProveedores && (
+          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border-l-4 border-purple-500">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-xs sm:text-sm font-medium">Proveedores</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-800 mt-1 sm:mt-2">{totalProveedores}</p>
+              </div>
+              <Users className="w-8 h-8 sm:w-12 sm:h-12 text-purple-500" />
             </div>
-            <Users className="w-8 h-8 sm:w-12 sm:h-12 text-purple-500" />
           </div>
-        </div>
+        )}
 
-        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border-l-4 border-orange-500">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-xs sm:text-sm font-medium">Facturas</p>
-              <p className="text-2xl sm:text-3xl font-bold text-gray-800 mt-1 sm:mt-2">{totalFacturas}</p>
+        {dashboardConfig.showFacturas && (
+          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border-l-4 border-orange-500">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-xs sm:text-sm font-medium">Facturas</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-800 mt-1 sm:mt-2">{totalFacturas}</p>
+              </div>
+              <FileText className="w-8 h-8 sm:w-12 sm:h-12 text-orange-500" />
             </div>
-            <FileText className="w-8 h-8 sm:w-12 sm:h-12 text-orange-500" />
           </div>
-        </div>
+        )}
       </div>
 
       {/* Alertas Importantes */}
-      <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
-        <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
-          <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 text-red-500" />
-          Alertas Importantes
-        </h3>
-        <div className="space-y-3">
-          {facturasVencidas.length > 0 && (
-            <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg">
-              <p className="font-semibold text-red-800">
-                {facturasVencidas.length} Factura(s) Vencida(s)
-              </p>
-              <p className="text-sm text-red-600 mt-1">
-                Requieren atención inmediata
-              </p>
-            </div>
-          )}
-          {stockBajo.length > 0 && (
-            <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-lg">
-              <p className="font-semibold text-yellow-800">
-                {stockBajo.length} Producto(s) con Stock Bajo
-              </p>
-              <p className="text-sm text-yellow-600 mt-1">
-                Considerar reposición de inventario
-              </p>
-            </div>
-          )}
-          {proximosVencimientosIVA.length > 0 && (
-            <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
-              <p className="font-semibold text-blue-800">
-                {proximosVencimientosIVA.length} Próximo(s) Vencimiento(s) IVA
-              </p>
-              <p className="text-sm text-blue-600 mt-1">
-                Revisar facturas pendientes
-              </p>
-            </div>
-          )}
-          {facturasVencidas.length === 0 && stockBajo.length === 0 && proximosVencimientosIVA.length === 0 && (
-            <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded-lg">
-              <p className="font-semibold text-green-800">
-                No hay alertas pendientes
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Resumen Financiero */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-4 sm:p-6 text-white">
-          <div className="flex items-center justify-between mb-2">
-            <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8" />
+      {(dashboardConfig.showAlertas === 'all' || dashboardConfig.showAlertas === 'tributarias' || dashboardConfig.showAlertas === 'stock') && (
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
+          <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
+            <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 text-red-500" />
+            Alertas Importantes
+          </h3>
+          <div className="space-y-3">
+            {(dashboardConfig.showAlertas === 'all' || dashboardConfig.showAlertas === 'tributarias') && facturasVencidas.length > 0 && (
+              <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg">
+                <p className="font-semibold text-red-800">
+                  {facturasVencidas.length} Factura(s) Vencida(s)
+                </p>
+                <p className="text-sm text-red-600 mt-1">
+                  Requieren atención inmediata
+                </p>
+              </div>
+            )}
+            {(dashboardConfig.showAlertas === 'all' || dashboardConfig.showAlertas === 'stock') && stockBajo.length > 0 && (
+              <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-lg">
+                <p className="font-semibold text-yellow-800">
+                  {stockBajo.length} Producto(s) con Stock Bajo
+                </p>
+                <p className="text-sm text-yellow-600 mt-1">
+                  Considerar reposición de inventario
+                </p>
+              </div>
+            )}
+            {(dashboardConfig.showAlertas === 'all' || dashboardConfig.showAlertas === 'tributarias') && proximosVencimientosIVA.length > 0 && (
+              <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
+                <p className="font-semibold text-blue-800">
+                  {proximosVencimientosIVA.length} Próximo(s) Vencimiento(s) IVA
+                </p>
+                <p className="text-sm text-blue-600 mt-1">
+                  Revisar facturas pendientes
+                </p>
+              </div>
+            )}
+            {((dashboardConfig.showAlertas === 'all' && facturasVencidas.length === 0 && stockBajo.length === 0 && proximosVencimientosIVA.length === 0) ||
+              (dashboardConfig.showAlertas === 'tributarias' && facturasVencidas.length === 0 && proximosVencimientosIVA.length === 0) ||
+              (dashboardConfig.showAlertas === 'stock' && stockBajo.length === 0)) && (
+              <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded-lg">
+                <p className="font-semibold text-green-800">
+                  No hay alertas pendientes
+                </p>
+              </div>
+            )}
           </div>
-          <p className="text-xs sm:text-sm opacity-90">Ventas del Mes</p>
-          <p className="text-lg sm:text-2xl font-bold mt-1 break-words">{formatearMoneda(ventasMes)}</p>
         </div>
+      )}
 
-        <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-xl shadow-lg p-4 sm:p-6 text-white">
-          <div className="flex items-center justify-between mb-2">
-            <DollarSign className="w-6 h-6 sm:w-8 sm:h-8" />
+      {/* Resumen Financiero - Solo para roles con acceso financiero */}
+      {dashboardConfig.showFinanciero && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-4 sm:p-6 text-white">
+            <div className="flex items-center justify-between mb-2">
+              <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8" />
+            </div>
+            <p className="text-xs sm:text-sm opacity-90">Ventas del Mes</p>
+            <p className="text-lg sm:text-2xl font-bold mt-1 break-words">{formatearMoneda(ventasMes)}</p>
           </div>
-          <p className="text-xs sm:text-sm opacity-90">Cuentas por Pagar</p>
-          <p className="text-lg sm:text-2xl font-bold mt-1 break-words">{formatearMoneda(cuentasPorPagar)}</p>
-        </div>
 
-        <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl shadow-lg p-4 sm:p-6 text-white">
-          <div className="flex items-center justify-between mb-2">
-            <FileText className="w-6 h-6 sm:w-8 sm:h-8" />
+          <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-xl shadow-lg p-4 sm:p-6 text-white">
+            <div className="flex items-center justify-between mb-2">
+              <DollarSign className="w-6 h-6 sm:w-8 sm:h-8" />
+            </div>
+            <p className="text-xs sm:text-sm opacity-90">Cuentas por Pagar</p>
+            <p className="text-lg sm:text-2xl font-bold mt-1 break-words">{formatearMoneda(cuentasPorPagar)}</p>
           </div>
-          <p className="text-xs sm:text-sm opacity-90">Facturas Pendientes</p>
-          <p className="text-lg sm:text-2xl font-bold mt-1">{facturasPendientes}</p>
-        </div>
 
-        <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl shadow-lg p-4 sm:p-6 text-white">
-          <div className="flex items-center justify-between mb-2">
-            <DollarSign className="w-6 h-6 sm:w-8 sm:h-8" />
+          <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl shadow-lg p-4 sm:p-6 text-white">
+            <div className="flex items-center justify-between mb-2">
+              <FileText className="w-6 h-6 sm:w-8 sm:h-8" />
+            </div>
+            <p className="text-xs sm:text-sm opacity-90">Facturas Pendientes</p>
+            <p className="text-lg sm:text-2xl font-bold mt-1">{facturasPendientes}</p>
           </div>
-          <p className="text-xs sm:text-sm opacity-90">Balance Estimado</p>
-          <p className="text-lg sm:text-2xl font-bold mt-1 break-words">{formatearMoneda(balanceEstimado)}</p>
+
+          <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl shadow-lg p-4 sm:p-6 text-white">
+            <div className="flex items-center justify-between mb-2">
+              <DollarSign className="w-6 h-6 sm:w-8 sm:h-8" />
+            </div>
+            <p className="text-xs sm:text-sm opacity-90">Balance Estimado</p>
+            <p className="text-lg sm:text-2xl font-bold mt-1 break-words">{formatearMoneda(balanceEstimado)}</p>
+          </div>
         </div>
-      </div>
+      )}
     </div>
-  );
+    );
+  };
 
-  const renderProductos = () => (
+  const renderProductos = () => {
+    // Validar acceso
+    if (!tieneAccesoModulo('productos')) {
+      return (
+        <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded-lg">
+          <div className="flex items-center gap-3">
+            <AlertCircle className="w-8 h-8 text-red-500" />
+            <div>
+              <h3 className="text-lg font-semibold text-red-800">⛔ Acceso Denegado</h3>
+              <p className="text-sm text-red-600 mt-1">No tienes permisos para acceder a este módulo.</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
         <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Gestión de Productos</h2>
-        <button
-          onClick={() => abrirModal()}
-          className="w-full sm:w-auto bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition flex items-center justify-center gap-2 text-sm sm:text-base"
-        >
-          <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
-          <span className="hidden sm:inline">Nuevo Producto</span>
-          <span className="sm:hidden">Nuevo</span>
-        </button>
+        {tienePermiso('productos', 'create') && (
+          <button
+            onClick={() => abrirModal()}
+            className="w-full sm:w-auto bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition flex items-center justify-center gap-2 text-sm sm:text-base"
+          >
+            <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="hidden sm:inline">Nuevo Producto</span>
+            <span className="sm:hidden">Nuevo</span>
+          </button>
+        )}
       </div>
 
       {/* Vista móvil: Cards */}
@@ -462,20 +579,26 @@ const EstiloVivoERP = () => {
                 <h3 className="font-semibold text-gray-900 text-sm">{producto.nombre}</h3>
                 <p className="text-xs text-gray-500 mt-1">{producto.categoria}</p>
               </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => abrirModal(producto)}
-                  className="text-indigo-600 hover:text-indigo-900"
-                >
-                  <Edit className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => eliminarItem(producto.id)}
-                  className="text-red-600 hover:text-red-900"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
+              {(tienePermiso('productos', 'edit') || tienePermiso('productos', 'delete')) && (
+                <div className="flex gap-2">
+                  {tienePermiso('productos', 'edit') && (
+                    <button
+                      onClick={() => abrirModal(producto)}
+                      className="text-indigo-600 hover:text-indigo-900"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                  )}
+                  {tienePermiso('productos', 'delete') && (
+                    <button
+                      onClick={() => eliminarItem(producto.id)}
+                      className="text-red-600 hover:text-red-900"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
             <div className="grid grid-cols-2 gap-2 mt-3 text-xs">
               <div>
@@ -509,7 +632,9 @@ const EstiloVivoERP = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Proveedor</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                {(tienePermiso('productos', 'edit') || tienePermiso('productos', 'delete')) && (
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                )}
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -524,20 +649,26 @@ const EstiloVivoERP = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{producto.proveedor}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => abrirModal(producto)}
-                        className="text-indigo-600 hover:text-indigo-900"
-                      >
-                        <Edit className="w-5 h-5" />
-                      </button>
-                      <button
-                        onClick={() => eliminarItem(producto.id)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </button>
-                    </div>
+                    {(tienePermiso('productos', 'edit') || tienePermiso('productos', 'delete')) && (
+                      <div className="flex gap-2">
+                        {tienePermiso('productos', 'edit') && (
+                          <button
+                            onClick={() => abrirModal(producto)}
+                            className="text-indigo-600 hover:text-indigo-900"
+                          >
+                            <Edit className="w-5 h-5" />
+                          </button>
+                        )}
+                        {tienePermiso('productos', 'delete') && (
+                          <button
+                            onClick={() => eliminarItem(producto.id)}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -625,20 +756,39 @@ const EstiloVivoERP = () => {
         </form>
       </Modal>
     </div>
-  );
+    );
+  };
 
-  const renderVentas = () => (
+  const renderVentas = () => {
+    // Validar acceso
+    if (!tieneAccesoModulo('ventas')) {
+      return (
+        <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded-lg">
+          <div className="flex items-center gap-3">
+            <AlertCircle className="w-8 h-8 text-red-500" />
+            <div>
+              <h3 className="text-lg font-semibold text-red-800">⛔ Acceso Denegado</h3>
+              <p className="text-sm text-red-600 mt-1">No tienes permisos para acceder a este módulo.</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
         <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Registro de Ventas</h2>
-        <button
-          onClick={() => abrirModal()}
-          className="w-full sm:w-auto bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center justify-center gap-2 text-sm sm:text-base"
-        >
-          <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
-          <span className="hidden sm:inline">Nueva Venta</span>
-          <span className="sm:hidden">Nueva</span>
-        </button>
+        {tienePermiso('ventas', 'create') && (
+          <button
+            onClick={() => abrirModal()}
+            className="w-full sm:w-auto bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center justify-center gap-2 text-sm sm:text-base"
+          >
+            <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="hidden sm:inline">Nueva Venta</span>
+            <span className="sm:hidden">Nueva</span>
+          </button>
+        )}
       </div>
 
       {/* Vista móvil: Cards */}
@@ -670,22 +820,28 @@ const EstiloVivoERP = () => {
                 <span className="ml-1 font-semibold text-gray-900">{formatearMoneda(venta.total)}</span>
               </div>
             </div>
-            <div className="flex gap-2 mt-3 pt-3 border-t border-gray-200">
-              <button
-                onClick={() => abrirModal(venta)}
-                className="flex-1 text-indigo-600 hover:text-indigo-900 text-xs font-medium flex items-center justify-center gap-1"
-              >
-                <Edit className="w-3 h-3" />
-                Editar
-              </button>
-              <button
-                onClick={() => eliminarItem(venta.id)}
-                className="flex-1 text-red-600 hover:text-red-900 text-xs font-medium flex items-center justify-center gap-1"
-              >
-                <Trash2 className="w-3 h-3" />
-                Eliminar
-              </button>
-            </div>
+            {(tienePermiso('ventas', 'edit') || tienePermiso('ventas', 'delete')) && (
+              <div className="flex gap-2 mt-3 pt-3 border-t border-gray-200">
+                {tienePermiso('ventas', 'edit') && (
+                  <button
+                    onClick={() => abrirModal(venta)}
+                    className="flex-1 text-indigo-600 hover:text-indigo-900 text-xs font-medium flex items-center justify-center gap-1"
+                  >
+                    <Edit className="w-3 h-3" />
+                    Editar
+                  </button>
+                )}
+                {tienePermiso('ventas', 'delete') && (
+                  <button
+                    onClick={() => eliminarItem(venta.id)}
+                    className="flex-1 text-red-600 hover:text-red-900 text-xs font-medium flex items-center justify-center gap-1"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                    Eliminar
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -703,7 +859,9 @@ const EstiloVivoERP = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cantidad</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                {(tienePermiso('ventas', 'edit') || tienePermiso('ventas', 'delete')) && (
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                )}
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -722,22 +880,28 @@ const EstiloVivoERP = () => {
                       {venta.estado}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => abrirModal(venta)}
-                        className="text-indigo-600 hover:text-indigo-900"
-                      >
-                        <Edit className="w-5 h-5" />
-                      </button>
-                      <button
-                        onClick={() => eliminarItem(venta.id)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </button>
-                    </div>
-                  </td>
+                  {(tienePermiso('ventas', 'edit') || tienePermiso('ventas', 'delete')) && (
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex gap-2">
+                        {tienePermiso('ventas', 'edit') && (
+                          <button
+                            onClick={() => abrirModal(venta)}
+                            className="text-indigo-600 hover:text-indigo-900"
+                          >
+                            <Edit className="w-5 h-5" />
+                          </button>
+                        )}
+                        {tienePermiso('ventas', 'delete') && (
+                          <button
+                            onClick={() => eliminarItem(venta.id)}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
@@ -842,20 +1006,39 @@ const EstiloVivoERP = () => {
         </form>
       </Modal>
     </div>
-  );
+    );
+  };
 
-  const renderProveedores = () => (
+  const renderProveedores = () => {
+    // Validar acceso
+    if (!tieneAccesoModulo('proveedores')) {
+      return (
+        <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded-lg">
+          <div className="flex items-center gap-3">
+            <AlertCircle className="w-8 h-8 text-red-500" />
+            <div>
+              <h3 className="text-lg font-semibold text-red-800">⛔ Acceso Denegado</h3>
+              <p className="text-sm text-red-600 mt-1">No tienes permisos para acceder a este módulo.</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
         <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Gestión de Proveedores</h2>
-        <button
-          onClick={() => abrirModal()}
-          className="w-full sm:w-auto bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition flex items-center justify-center gap-2 text-sm sm:text-base"
-        >
-          <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
-          <span className="hidden sm:inline">Nuevo Proveedor</span>
-          <span className="sm:hidden">Nuevo</span>
-        </button>
+        {tienePermiso('proveedores', 'create') && (
+          <button
+            onClick={() => abrirModal()}
+            className="w-full sm:w-auto bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition flex items-center justify-center gap-2 text-sm sm:text-base"
+          >
+            <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="hidden sm:inline">Nuevo Proveedor</span>
+            <span className="sm:hidden">Nuevo</span>
+          </button>
+        )}
       </div>
 
       {/* Vista móvil: Cards */}
@@ -867,20 +1050,26 @@ const EstiloVivoERP = () => {
                 <h3 className="font-semibold text-gray-900 text-sm">{proveedor.nombre}</h3>
                 <p className="text-xs text-gray-500 mt-1">RUT: {proveedor.rut}</p>
               </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => abrirModal(proveedor)}
-                  className="text-indigo-600 hover:text-indigo-900"
-                >
-                  <Edit className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => eliminarItem(proveedor.id)}
-                  className="text-red-600 hover:text-red-900"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
+              {(tienePermiso('proveedores', 'edit') || tienePermiso('proveedores', 'delete')) && (
+                <div className="flex gap-2">
+                  {tienePermiso('proveedores', 'edit') && (
+                    <button
+                      onClick={() => abrirModal(proveedor)}
+                      className="text-indigo-600 hover:text-indigo-900"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                  )}
+                  {tienePermiso('proveedores', 'delete') && (
+                    <button
+                      onClick={() => eliminarItem(proveedor.id)}
+                      className="text-red-600 hover:text-red-900"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
             <div className="space-y-2 mt-3 text-xs">
               <div>
@@ -919,7 +1108,9 @@ const EstiloVivoERP = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Saldo Pendiente</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                {(tienePermiso('proveedores', 'edit') || tienePermiso('proveedores', 'delete')) && (
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                )}
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -934,22 +1125,28 @@ const EstiloVivoERP = () => {
                   <td className={`px-6 py-4 whitespace-nowrap text-sm font-semibold ${proveedor.saldo > 0 ? 'text-red-600' : 'text-green-600'}`}>
                     {formatearMoneda(proveedor.saldo)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => abrirModal(proveedor)}
-                        className="text-indigo-600 hover:text-indigo-900"
-                      >
-                        <Edit className="w-5 h-5" />
-                      </button>
-                      <button
-                        onClick={() => eliminarItem(proveedor.id)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </button>
-                    </div>
-                  </td>
+                  {(tienePermiso('proveedores', 'edit') || tienePermiso('proveedores', 'delete')) && (
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex gap-2">
+                        {tienePermiso('proveedores', 'edit') && (
+                          <button
+                            onClick={() => abrirModal(proveedor)}
+                            className="text-indigo-600 hover:text-indigo-900"
+                          >
+                            <Edit className="w-5 h-5" />
+                          </button>
+                        )}
+                        {tienePermiso('proveedores', 'delete') && (
+                          <button
+                            onClick={() => eliminarItem(proveedor.id)}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
@@ -1047,13 +1244,41 @@ const EstiloVivoERP = () => {
         </form>
       </Modal>
     </div>
-  );
+    );
+  };
 
-  const renderFacturas = () => (
+  const renderFacturas = () => {
+    // Validar acceso
+    if (!tieneAccesoModulo('facturas')) {
+      return (
+        <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded-lg">
+          <div className="flex items-center gap-3">
+            <AlertCircle className="w-8 h-8 text-red-500" />
+            <div>
+              <h3 className="text-lg font-semibold text-red-800">⛔ Acceso Denegado</h3>
+              <p className="text-sm text-red-600 mt-1">No tienes permisos para acceder a este módulo.</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
         <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Gestión de Facturas</h2>
-        <p className="text-xs sm:text-sm text-gray-600">Solo lectura - Visualización de facturas</p>
+        {tienePermiso('facturas', 'create') ? (
+          <button
+            onClick={() => abrirModal()}
+            className="w-full sm:w-auto bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition flex items-center justify-center gap-2 text-sm sm:text-base"
+          >
+            <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="hidden sm:inline">Nueva Factura</span>
+            <span className="sm:hidden">Nueva</span>
+          </button>
+        ) : (
+          <p className="text-xs sm:text-sm text-gray-600">Solo lectura - Visualización de facturas</p>
+        )}
       </div>
 
       {/* Vista móvil: Cards */}
@@ -1133,7 +1358,8 @@ const EstiloVivoERP = () => {
         </div>
       </div>
     </div>
-  );
+    );
+  };
 
   // Si no hay usuario logueado, mostrar login
   if (!usuarioLogueado) {
@@ -1168,77 +1394,87 @@ const EstiloVivoERP = () => {
         </div>
 
         <nav className="flex-1 p-4 space-y-2">
-          <button
-            onClick={() => {
-              setModuloActual('dashboard');
-              setSidebarAbierto(false);
-            }}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
-              moduloActual === 'dashboard'
-                ? 'bg-indigo-50 text-indigo-600 font-semibold'
-                : 'text-gray-700 hover:bg-gray-50'
-            }`}
-          >
-            <LayoutDashboard className="w-5 h-5" />
-            <span className="hidden sm:inline">Dashboard</span>
-            <span className="sm:hidden">Dashboard</span>
-          </button>
-          <button
-            onClick={() => {
-              setModuloActual('productos');
-              setSidebarAbierto(false);
-            }}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
-              moduloActual === 'productos'
-                ? 'bg-indigo-50 text-indigo-600 font-semibold'
-                : 'text-gray-700 hover:bg-gray-50'
-            }`}
-          >
-            <Package className="w-5 h-5" />
-            Productos
-          </button>
-          <button
-            onClick={() => {
-              setModuloActual('ventas');
-              setSidebarAbierto(false);
-            }}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
-              moduloActual === 'ventas'
-                ? 'bg-indigo-50 text-indigo-600 font-semibold'
-                : 'text-gray-700 hover:bg-gray-50'
-            }`}
-          >
-            <ShoppingCart className="w-5 h-5" />
-            Ventas
-          </button>
-          <button
-            onClick={() => {
-              setModuloActual('proveedores');
-              setSidebarAbierto(false);
-            }}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
-              moduloActual === 'proveedores'
-                ? 'bg-indigo-50 text-indigo-600 font-semibold'
-                : 'text-gray-700 hover:bg-gray-50'
-            }`}
-          >
-            <Users className="w-5 h-5" />
-            Proveedores
-          </button>
-          <button
-            onClick={() => {
-              setModuloActual('facturas');
-              setSidebarAbierto(false);
-            }}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
-              moduloActual === 'facturas'
-                ? 'bg-indigo-50 text-indigo-600 font-semibold'
-                : 'text-gray-700 hover:bg-gray-50'
-            }`}
-          >
-            <FileText className="w-5 h-5" />
-            Facturas
-          </button>
+          {tieneAccesoModulo('dashboard') && (
+            <button
+              onClick={() => {
+                setModuloActual('dashboard');
+                setSidebarAbierto(false);
+              }}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
+                moduloActual === 'dashboard'
+                  ? 'bg-indigo-50 text-indigo-600 font-semibold'
+                  : 'text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              <LayoutDashboard className="w-5 h-5" />
+              <span className="hidden sm:inline">Dashboard</span>
+              <span className="sm:hidden">Dashboard</span>
+            </button>
+          )}
+          {tieneAccesoModulo('productos') && (
+            <button
+              onClick={() => {
+                setModuloActual('productos');
+                setSidebarAbierto(false);
+              }}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
+                moduloActual === 'productos'
+                  ? 'bg-indigo-50 text-indigo-600 font-semibold'
+                  : 'text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              <Package className="w-5 h-5" />
+              Productos
+            </button>
+          )}
+          {tieneAccesoModulo('ventas') && (
+            <button
+              onClick={() => {
+                setModuloActual('ventas');
+                setSidebarAbierto(false);
+              }}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
+                moduloActual === 'ventas'
+                  ? 'bg-indigo-50 text-indigo-600 font-semibold'
+                  : 'text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              <ShoppingCart className="w-5 h-5" />
+              Ventas
+            </button>
+          )}
+          {tieneAccesoModulo('proveedores') && (
+            <button
+              onClick={() => {
+                setModuloActual('proveedores');
+                setSidebarAbierto(false);
+              }}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
+                moduloActual === 'proveedores'
+                  ? 'bg-indigo-50 text-indigo-600 font-semibold'
+                  : 'text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              <Users className="w-5 h-5" />
+              Proveedores
+            </button>
+          )}
+          {tieneAccesoModulo('facturas') && (
+            <button
+              onClick={() => {
+                setModuloActual('facturas');
+                setSidebarAbierto(false);
+              }}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
+                moduloActual === 'facturas'
+                  ? 'bg-indigo-50 text-indigo-600 font-semibold'
+                  : 'text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              <FileText className="w-5 h-5" />
+              Facturas
+            </button>
+          )}
         </nav>
 
         <div className="p-4 border-t border-gray-200">
